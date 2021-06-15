@@ -13,6 +13,7 @@ func main() {
 	
 	router.HandleFunc("/", upAndRunning).Methods("GET") 
 	router.HandleFunc("/posts", getPosts).Methods("GET")
+	router.HandleFunc("/posts", addPosts).Methods("POST")
 	//http.Handle("/", router)
 
 	log.Println("Server listening on port ", port)

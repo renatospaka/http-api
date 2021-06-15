@@ -34,7 +34,30 @@ func getPosts(resp http.ResponseWriter, req *http.Request) {
 		resp.Write([]byte(`{error: "Error marshalling the post array"}`))
 		return 
 	}
+	
+	resp.WriteHeader(http.StatusOK)
+	resp.Write(result)
+}
 
+func addPosts(resp http.ResponseWriter, req *http.Request) {
+	var post Post
+	resp.Header().Set("Content-Type", "application/json")
+	err := json.NewDecoder(req.Body).Decode(&post)
+	if err != nil {
+		resp.WriteHeader(http.StatusInternalServerError)
+		resp.Write([]byte(`{error: "Error unmarshalling the request"}`))
+		return 
+	}
+
+	post.Id = len(posts) + 1
+	posts = append(posts, post)
+	
+	result, err := json.Marshal(post)
+	if err != nil {
+		resp.WriteHeader(http.StatusInternalServerError)
+		resp.Write([]byte(`{error: "Error marshalling the post array"}`))
+		return 
+	}
 	resp.WriteHeader(http.StatusOK)
 	resp.Write(result)
 }
