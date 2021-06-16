@@ -1,24 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/renatospaka/golang-rest-api/controller"
 	"github.com/renatospaka/golang-rest-api/router"
 )
 
 var (
-	httpRouter router.Router = router.NewMuxRouter()
+	httpRouter     router.Router             = router.NewMuxRouter()
+	postController controller.PostController = controller.NewPostController()
 )
 
 func main() {
 	const port = ":8000"
 	httpRouter.GET("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Println(w, "Up and Running")	
+		log.Printf("Up and Running on port %s", port)
+		fmt.Fprintln(w, "Up and Running on port ", port)
 	})
 
-	// httpRouter.GET("/posts", GetPosts) 
-	// httpRouter.POST("/posts", AddPosts) 
+	httpRouter.GET("/posts", postController.GetPosts)
+	httpRouter.POST("/posts", postController.AddPosts)
 
 	httpRouter.SERVE(port)
 }

@@ -9,6 +9,8 @@ import (
 	errors "github.com/renatospaka/golang-rest-api/error"
 )
 
+type controller struct {}
+
 var (
 	postService service.PostService = service.NewPostService()
 )
@@ -18,7 +20,11 @@ type PostController interface {
 	AddPosts(resp http.ResponseWriter, req *http.Request)
 }
 
-func GetPosts(resp http.ResponseWriter, req *http.Request) {
+func NewPostController() PostController {
+	return &controller{}
+}
+
+func (*controller) GetPosts(resp http.ResponseWriter, req *http.Request) {
 	resp.Header().Set("Content-Type", "application/json")
 	posts, err := postService.FindAll()
 	if err != nil {
@@ -31,7 +37,7 @@ func GetPosts(resp http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(resp).Encode(posts)
 }
 
-func AddPosts(resp http.ResponseWriter, req *http.Request) {
+func (*controller) AddPosts(resp http.ResponseWriter, req *http.Request) {
 	var post entity.Post
 	resp.Header().Set("Content-Type", "application/json")
 	err := json.NewDecoder(req.Body).Decode(&post)
