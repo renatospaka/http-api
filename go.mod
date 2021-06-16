@@ -5,6 +5,7 @@ go 1.16
 require (
 	cloud.google.com/go v0.84.0 // indirect
 	cloud.google.com/go/firestore v1.5.0
+	github.com/go-chi/chi v1.5.4 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/gorilla/mux v1.8.0
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
