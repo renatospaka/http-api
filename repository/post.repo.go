@@ -6,6 +6,7 @@ import (
 
 	"github.com/renatospaka/golang-rest-api/entity"
 	"cloud.google.com/go/firestore"
+	"google.golang.org/api/iterator"
 )
 
 type PostRepository interface {
@@ -20,7 +21,7 @@ func NewPostRepository() PostRepository {
 }
 
 const (
-	projectId      string = "pragmatic-reviews"
+	projectId      string = "pragmatic-reviews-ebad2"
 	collectionName string = "posts"
 )
 
@@ -56,21 +57,24 @@ func (*repo) FindAll() ([]entity.Post, error) {
 	defer client.Close()
 
 	var posts []entity.Post
-	iterator := client.Collection(collectionName).Documents(ctx)
+	iter := client.Collection(collectionName).Documents(ctx)
 	for {
-		doc, err := iterator.Next()
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
 		if err != nil {
 			log.Fatalf("Failed to iterate the list of posts: %v", err)
 			return nil, err
 		}
-
+		
 		post := entity.Post{
 			ID:    doc.Data()["ID"].(int64),
 			Title: doc.Data()["Title"].(string),
 			Text:  doc.Data()["Text"].(string),
 		}
-		posts = append(posts, post)
+		posts = append(posts, post)	
 	}
-
+	
 	return posts, nil
 }
