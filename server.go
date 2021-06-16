@@ -4,18 +4,21 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/renatospaka/golang-rest-api/router"
+)
+
+var (
+	httpRouter router.Router = router.NewMuxRouter()
 )
 
 func main() {
 	const port = ":8000"
-	router := mux.NewRouter()
-	
-	router.HandleFunc("/", upAndRunning).Methods("GET") 
-	router.HandleFunc("/posts", getPosts).Methods("GET")
-	router.HandleFunc("/posts", addPosts).Methods("POST")
-	//http.Handle("/", router)
+	httpRouter.GET("/", func(w http.ResponseWriter, r *http.Request) {
+		log.Println(w, "Up and Running")	
+	})
 
-	log.Println("Server listening on port ", port)
-	log.Fatalln(http.ListenAndServe(port, router))
+	// httpRouter.GET("/posts", GetPosts) 
+	// httpRouter.POST("/posts", AddPosts) 
+
+	httpRouter.SERVE(port)
 }
