@@ -16,13 +16,14 @@ type PostService interface {
 
 type service struct {}
 
-func NewPostService() PostService {
+var (
+	repo repository.PostRepository 
+)
+
+func NewPostService(repository repository.PostRepository) PostService {
+	repo = repository
 	return &service{}
 }
-
-var (
-	repo repository.PostRepository = repository.NewFirestorePostRepository()
-)
 
 func (*service) Validate(post *entity.Post) error {
 	if post == nil {
