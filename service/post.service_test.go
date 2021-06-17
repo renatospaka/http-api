@@ -49,3 +49,41 @@ func TestValidateEmptyPostText(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Equal(t, "The post text is empty", err.Error())
 }
+
+func TestFindAll(t *testing.T) {
+	var id int64 = 1 
+	mockRepo := new(mockRepository)
+	post := entity.Post{ID: id, Title: "A", Text: "B"}
+
+	//setup the expectations
+	mockRepo.On("FindAll").Return([]entity.Post{post}, nil)
+	testService := NewPostService(mockRepo)
+
+	//mock assertion: Behavioral
+	result, _ := testService.FindAll()
+	mockRepo.AssertExpectations(t)
+
+	//data assertion
+	assert.Equal(t, id, result[0].ID)
+	assert.Equal(t, "A", result[0].Title)
+	assert.Equal(t, "B", result[0].Text)
+}
+
+func TestCreate(t *testing.T) {
+	mockRepo := new(mockRepository)
+	post := entity.Post{Title: "A", Text: "B"}
+
+	//setup the expectations
+	mockRepo.On("Save").Return(&post, nil)
+	testService := NewPostService(mockRepo)
+
+	//mock assertion: Behavioral
+	result, err := testService.Create(&post)
+	mockRepo.AssertExpectations(t)
+
+	//data assertion
+	assert.NotNil(t, result.ID)
+	assert.Equal(t, "A", result.Title)
+	assert.Equal(t, "B", result.Text)
+	assert.Nil(t, err)
+}
